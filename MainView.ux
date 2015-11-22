@@ -1,0 +1,188 @@
+<App Theme="Basic" Background="#1a1a1a">
+  <DockPanel>
+    <StatusBarBackground Dock="Top" Background="#222" />
+    <iOS.StatusBarConfig Style="Light" />
+    <JavaScript File="./app.js"></JavaScript>
+
+    <Font File="Assets/Fonts/OpenSans-Bold.ttf" ux:Global="Bold" />
+    <Font File="Assets/Fonts/OpenSans-SemiBold.ttf" ux:Global="SemiBold" />
+    <Font File="Assets/Fonts/OpenSans-Regular.ttf" ux:Global="Regular" />
+    <Font File="Assets/Fonts/OpenSans-Light.ttf" ux:Global="Light" />
+
+    <Style>
+      <Text TextColor="#fff" Font="Regular" />
+      <Page>
+        <EnteringAnimation>
+          <Move X="-1" RelativeTo="ParentSize" />
+        </EnteringAnimation>
+        <ExitingAnimation>
+          <Move X="1" RelativeTo="ParentSize" />
+        </ExitingAnimation>
+      </Page>
+    </Style>
+    
+    <Panel ux:Name="top_panel" Alignment="Top">
+      <Panel Height="75" Background="#222">
+        <Panel ux:Name="top_panel_home">
+          <DockPanel Alignment="Center">
+            <Text Dock="Left" FontSize="22" TextColor="#fff" Margin="0, 0, 5, 0">BEKK</Text>
+            <Text FontSize="22" TextColor="#36BDB2">football</Text>
+          </DockPanel>
+        </Panel>
+
+        <DockPanel ux:Name="top_panel_event" Alignment="Bottom" Height="60" Opacity="0" Margin="15, 0, 0, 0">
+          <BackButton />
+
+          <Panel Dock="Left" Margin="20, 17, 20, 17" Alignment="HorizontalCenter">
+            <Rectangle Width="1" Fill="#fff" />
+          </Panel>
+
+          <StackPanel Alignment="CenterLeft">
+            <Style><Text FontSize="12" /></Style>
+            <Text Font="Bold" Value="{event_details.subject}" />
+            <Text Value="{event_details.location}" TextColor="#887E6F" />
+          </StackPanel>
+        </DockPanel>
+      </Panel>
+
+      <Panel ux:Name="loading_indicator" Height="25" Alignment="Bottom" Background="#36BDB2">
+        <Text Value="Laster sanntidsdata..." TextColor="#fff" FontSize="12" Alignment="Center" />
+
+        <WhileTrue Value="{loading_indicator}">
+          <Move RelativeTo="Size" Y="1" Duration="0.1" Easing="CircularInOut" />
+        </WhileTrue>
+      </Panel>
+    </Panel>
+
+
+
+
+
+    <ScrollView ux:Name="events" Alignment="Top">
+      <StackPanel Padding="0, 75, 0, 0">
+        <Style>
+          <Text FontSize="12" />
+        </Style>
+
+        <Each Items="{events}">
+          <StackPanel Margin="15, 10, 15, 10" Clicked="{event_click}">
+            <Text Dock="Left" FontSize="20" Value="{subject}" TextColor="#FD5158" />
+            <Text Dock="Left" Alignment="Bottom" Value="{location}" TextColor="#887E6F" />
+            
+            <DockPanel Margin="0, 5, 0, 0">
+              <StackPanel Dock="Left" Margin="0, 0, 55, 0">
+                <Text TextColor="#36BDB2" FontSize="12">Tidspunkt</Text>
+                <Text  Value="{startTime}" /> 
+              </StackPanel>
+
+              <StackPanel Dock="Left">
+                <Text TextColor="#36BDB2" FontSize="12">Påmeldingsstart</Text>
+                <Text Value="{regStart}" />
+              </StackPanel>
+            </DockPanel>
+          </StackPanel>
+        </Each>
+      </StackPanel>
+    </ScrollView>
+
+
+
+
+
+
+    <ScrollView ux:Name="event_details" SnapMinTransform="false">
+      <Style>
+        <Text FontSize="13" />
+        <TextInput TextColor="#fff" />
+      </Style>
+
+      <DockPanel Padding="0, 65, 0, 0">
+        <CogWheelReload Dock="Top" />
+        <StackPanel>
+          <DockPanel Margin="15, 15, 15, 0">
+            <StackPanel Dock="Left" Margin="0, 0, 0, 15">
+              <Text TextColor="#36BDB2" FontSize="12">START</Text>
+              <Text Value="{event_details.startTime}" />
+            </StackPanel>
+
+            <StackPanel Dock="Left" Margin="35, 0, 0, 15">
+              <Text TextColor="#36BDB2" FontSize="12">SLUTT</Text>
+              <Text Value="{event_details.endTime}" />
+            </StackPanel>
+          </DockPanel>
+
+          <StackPanel Background="#333" Padding="15">
+            <Text>Navn</Text>
+            <TextInput />
+
+            <Text>Telefonnummer</Text>
+            <TextInput />
+
+            <Text>Epostadresse</Text>
+            <TextInput />
+
+            <Panel Margin="0, 0, 0, 15">
+              <Text Alignment="Center" Margin="15">Meld meg på</Text>
+              <Rectangle ux:Name="reg_button" Fill="#36BDB2">
+                <WhilePressed>
+                  <Scale Factor=".98" Duration=".06" Easing="QuadraticOut" />
+                </WhilePressed>
+              </Rectangle>
+            </Panel>
+
+            <DockPanel>
+              <Text Dock="Left" Font="Bold" Margin="0, 0, 5, 0">Maks antall:</Text>
+              <Text Value="{event_details.maxNumber}" />
+            </DockPanel>
+
+            <DockPanel>
+              <Text Dock="Left" Font="Bold" Margin="0, 0, 5, 0">Antall påmeldte:</Text>
+              <Text Value="{num_of_participants}" />
+            </DockPanel>
+
+          </StackPanel>
+
+          <StackPanel Margin="15">
+            <Text TextColor="#36BDB2" FontSize="12">BESKRIVELSE</Text>
+            <Text Value="{event_details.description}" />
+
+            <Text TextColor="#36BDB2" Margin="0, 15, 0, 0" FontSize="12">PÅMELDTE</Text>
+            <StackPanel>
+              <Each Items="{participants}">
+                <DockPanel Margin="0, 5, 0, 0">
+                  <Text Dock="Left" Value="{name}" />
+                  <Text Dock="Right" TextAlignment="Left" Alignment="VerticalCenter" TextColor="#887E6F" FontSize="12" Clicked="{cancel_registration}">avmeld</Text>
+                </DockPanel>
+              </Each>
+            </StackPanel>
+            
+            <Text TextColor="#FD5158" Margin="0, 15, 0, 0" FontSize="12">RESERVE</Text>
+            <StackPanel>        
+              <Each Items="{reserve}">
+                <DockPanel Margin="0, 5, 0, 0">
+                  <Text Dock="Left" Value="{name}" />
+                  <Text Dock="Right" TextAlignment="Left" Alignment="VerticalCenter" TextColor="#887E6F" FontSize="12" Clicked="{cancel_registration}">avmeld</Text>
+                </DockPanel>
+              </Each>
+            </StackPanel>
+          </StackPanel>
+         
+        </StackPanel>
+      </DockPanel>
+
+
+      <WhileFalse Value="{event_details_active}">
+        <Move Target="event_details" RelativeTo="Size" Y="1" Duration="0.3" Easing="CircularInOut" />
+      </WhileFalse>
+
+      <WhileTrue Value="{event_details_active}">
+        <Move Target="top_panel" Y="-0.2" RelativeTo="Size" Duration="0.3" Easing="QuadraticOut" />
+        <Move Target="events" RelativeTo="Size" Y="-1" Duration="0.3" Easing="CircularInOut" />
+        <Change top_panel_home.Opacity="0" Duration=".3" Easing="QuadraticOut" />
+        <Change top_panel_event.Opacity="1" Duration=".3" Easing="QuadraticOut" />
+      </WhileTrue>
+    </ScrollView>
+
+  </DockPanel>
+</App>
+
